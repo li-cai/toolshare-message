@@ -1,0 +1,49 @@
+{% extends "authLayout.html" %}
+
+{% block title %}
+<title>Reply</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container col-md-offset-3">
+    <div class="col-md-8">
+
+        <h2 class="margin-bottom-20">Reply</h2>
+
+         {% if success %}
+            <div class="row">
+                <div class="alert alert-success col-md-10 side-space">
+                    Your reply was sent successfully!
+                </div>
+            </div>
+        {% endif %}       
+
+        <form role="reply_message" method="post">
+            {% csrf_token %}
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Reply To:</strong> {{ message.from_user.as_child.django_user.username }}</div>
+
+                <ul class="list-group">
+                    <li class="list-group-item">
+                            {{ form.message.errors }}
+                            {{ form.message }}
+                    </li>
+
+                    <li class="list-group-item">
+                        {% autoescape off %}{{ message.message | linebreaksbr }}{% endautoescape %}
+                        <p class="timestamp">{{ message.timestamp }}</p>
+                    </li>
+                </ul>
+            </div>
+
+            <p>
+                <input type="submit" class="btn btn-success col-md-3" name="Reply" value="Reply"></input>
+                <a class="btn btn-success col-md-3 cancel-button" href="{% url 'message.views.inbox' %}">Back</a>
+            </p>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

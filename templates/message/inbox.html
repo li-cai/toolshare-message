@@ -1,0 +1,50 @@
+{% extends "authLayout.html" %}
+
+{% block title %}
+<title>User Inbox</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container col-md-offset-3">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h2>Inbox</h2>
+        </div>
+
+        <div class="col-md-offset-6">
+            <br /><a class="btn btn-primary" href="{% url 'message.views.sendmessage' %}">New Message</a><br /><br />
+        </div>
+
+    </div>
+
+    {% if not msg_dict %}
+        <div class="col-md-8 no-side-padding">No Messages.</div>
+    {% endif %}
+
+    <div class="col-md-8 no-side-padding">
+        {% for username, messages in msg_dict.items %}
+            <div class="panel panel-default no-right-margin">
+                <div class="panel-heading">
+                    <strong>From: </strong>{{ username }}
+                </div>
+
+                <ul class="list-group">
+                    {% for msg in messages %}
+                        <li class="list-group-item">
+                            {% autoescape off %}{{ msg.message|linebreaksbr }}{% endautoescape %}<br />
+                            <p class="timestamp">{{ msg.timestamp }}
+                            <a href="/message/delete/{{ msg.id }}" class="float-right">Delete </a>
+                            <span class="float-right">|</span>
+                            <a href="/message/reply/{{ msg.id }}" class="float-right">Reply </a>
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "authLayout.html" %}
+
+{% block title %}
+<title>Message History</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container col-md-offset-2">
+        <h2>Message History</h2><br />
+
+        {% if not msg_dict %}
+            <div class="col-md-7 no-side-padding">No Messages.</div>
+        {% endif %}
+
+        <div class="col-md-7 no-side-padding margin-right-15">
+            {% for pair, messages in msg_dict.items %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>From: </strong>{{ pair.0 }}<br />
+                        <strong>To: </strong>{{ pair.1 }}
+                    </div>
+
+                    <ul class="list-group">
+                        {% for msg in messages %}
+                            <li class="list-group-item">{% autoescape off %}{{ msg.message|linebreaksbr }}{% endautoescape %}<br />
+                            <p class="timestamp">{{ msg.timestamp }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-offset-7 well col-md-3">
+            <form method="post" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group side-padding">
+                    <label>From</label>
+                    <select name="from" class="form-control col-sm-2">
+                        <option value="Any">Any</option>
+                        {% for user in users %}
+                            <option value="{{ user.user.django_user.username }}" {% if user.user.django_user.username == selected_from %} selected {% endif %}>{{ user.user.django_user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group side-padding">
+                    <label>To</label>
+                    <select name="to" class="form-control col-sm-2">
+                        <option>Any</option>
+                        {% for user in users %}
+                            <option value="{{ user.user.django_user.username }}" {% if user.user.django_user.username == selected_to %} selected {% endif %}>{{ user.user.django_user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <p>
+                    <input type="submit" class="btn btn-success btn-block" value="Filter"></input>
+                </p>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}
